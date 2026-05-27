@@ -1,0 +1,15 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - git
+  - nano
+  - curl
+  - apt-transport-https
+  - ca-certificates
+  - software-properties-common
+runcmd:
+  - curl -fsSL https://get.docker.com | sh
+  - usermod -aG docker azureuser
+  - systemctl enable docker
+  - systemctl start docker
