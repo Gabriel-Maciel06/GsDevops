@@ -1,0 +1,47 @@
+services:
+  db:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: db-562795
+    environment:
+      - ORACLE_PASSWORD=oracle
+      - APP_USER=RM562795
+      - APP_USER_PASSWORD=oracle
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+      - ./db/db_setup.sql:/container-entrypoint-initdb.d/01_db_setup.sql
+      - ./db/db_procedures.sql:/container-entrypoint-initdb.d/02_db_procedures.sql
+    networks:
+      - aerosoil_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: api-562795
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@db:1521/FREEPDB1
+      - SPRING_DATASOURCE_USERNAME=RM562795
+      - SPRING_DATASOURCE_PASSWORD=oracle
+      - JWT_SECRET=my-secret-key-gs-agro-id-2026-very-secure-random-key-here
+    networks:
+      - aerosoil_network
+    restart: unless-stopped
+
+volumes:
+  oracle_data:
+    name: oracle_data_volume_gs
+
+networks:
+  aerosoil_network:
+    driver: bridge
