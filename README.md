@@ -9,19 +9,6 @@
 ![AeroSoil AI Architecture](assets/aerosoil_architecture.png)
 
 > O AeroSoil AI é uma plataforma inteligente de agricultura de precisão que conecta dados meteorológicos espaciais (NASA/ESA) a sensores locais de campo (ESP32) para otimizar os ciclos de irrigação, reduzindo desperdício e atuando de forma ativa contra o estresse hídrico no solo. A solução unifica a análise preditiva orbital e telemetria física terrestre.
-
----
-
-## 🛠️ Ajustes e melhorias
-
-O projeto ainda está em desenvolvimento e as próximas atualizações serão voltadas para as seguintes tarefas:
-
-- [ ] Integração de atuadores físicos de irrigação (retransmissão de comandos da API para o ESP32)
-- [ ] Envio de notificações push para o App Mobile em alertas críticos
-- [ ] Dashboards gráficos adicionais de telemetria no painel do usuário
-- [ ] Otimização dos algoritmos preditivos para análise climática por satélite
-- [ ] Testes automatizados E2E (End-to-End) para toda a esteira de endpoints
-
 ---
 
 ## 💻 Pré-requisitos
