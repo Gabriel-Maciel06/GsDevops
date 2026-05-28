@@ -66,4 +66,24 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.email").value("new@test.com"))
                 .andExpect(jsonPath("$.perfil").value("USER"));
     }
+
+    @Test
+    void shouldReturnBadRequestOnLoginWithInvalidEmail() throws Exception {
+        LoginRequestDto request = new LoginRequestDto("", "password123");
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestOnRegisterWithShortPassword() throws Exception {
+        RegisterRequestDto request = new RegisterRequestDto("New User", "new@test.com", "123", "USER");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
 }

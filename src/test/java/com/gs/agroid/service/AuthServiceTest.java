@@ -120,4 +120,30 @@ class AuthServiceTest {
             authService.login(dto);
         });
     }
+
+    @Test
+    void shouldFailRegisteringDuplicateEmail() {
+        RegisterRequestDto dto = new RegisterRequestDto("Gabriel", "gabriel@test.com", "senha123", "USER");
+        Usuario existingUser = Usuario.builder()
+                .id(1L)
+                .email("gabriel@test.com")
+                .build();
+
+        when(usuarioRepository.findByEmail(dto.email())).thenReturn(Optional.of(existingUser));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            authService.register(dto);
+        });
+    }
+
+    @Test
+    void shouldFailLoginWithNonExistingUser() {
+        LoginRequestDto dto = new LoginRequestDto("nonexistent@test.com", "senha123");
+
+        when(usuarioRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
+
+        assertThrows(BadCredentialsException.class, () -> {
+            authService.login(dto);
+        });
+    }
 }
