@@ -1,146 +1,126 @@
-# 🛰️ AeroSoil AI - DevOps & Cloud Computing
+# AeroSoil AI
 
-O **AeroSoil AI** é uma plataforma de agricultura de precisão inteligente projetada para otimizar o uso da água e maximizar a segurança alimentar, atendendo diretamente aos Objetivos de Desenvolvimento Sustentável da ONU de **Fome Zero (ODS 2)** e **Ação Contra a Mudança Climática (ODS 13)**.
-
-Esta solução integra:
-*   **Visão Macro (Espaço)**: Consome dados climáticos orbitais das constelações da NASA/ESA para prever ondas de calor.
-*   **Visão Micro (Terra)**: Utiliza estações IoT com o microcontrolador ESP32 para monitorar a umidade local do solo e a luminosidade em tempo real.
-*   **Inteligência & Automação**: Um ecossistema inteligente em nuvem cruza esses dados e toma decisões automatizadas (ex.: ativar a irrigação e disparar alertas no aplicativo mobile quando o solo está seco e há uma seca iminente).
-
----
-
-## 👥 Integrantes da Equipe (Turma 2TDSR)
-*   **Gabriel Maciel Alves de Oliveira - RM 562795 (Representante)**
-*   **Vitória Rodrigues Martins - RM 565160**
-*   **Augusto Bonomo Junior - RM 565155**
-*   **Thomas Fontes - RM 562254**
-*   **Matheus Pereira Molina - RM 563399**
-
----
-
-## 📐 Desenho Macro da Arquitetura da Solução
-
-Abaixo está o desenho da arquitetura macro da solução implementada em Nuvem (Azure VM + Containers Docker), demonstrando o fluxo de dados dos sensores IoT, o consumo de satélites e a comunicação interna através de uma rede de ponte Docker isolada:
+![GitHub repo size](https://img.shields.io/github/repo-size/Gabriel-Maciel06/GsDevops?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/Gabriel-Maciel06/GsDevops?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/Gabriel-Maciel06/GsDevops?style=for-the-badge)
+![GitHub open issues](https://img.shields.io/github/issues/Gabriel-Maciel06/GsDevops?style=for-the-badge)
+![GitHub open pull requests](https://img.shields.io/github/issues-pr/Gabriel-Maciel06/GsDevops?style=for-the-badge)
 
 ![AeroSoil AI Architecture](assets/aerosoil_architecture.png)
 
----
-
-## 🛠️ Detalhes dos Containers (DevOps Rules)
-
-### 1. Container da API (Java Spring Boot)
-*   **Nome do Container**: `api-562795` (Contém o RM do representante).
-*   **Construção**: Imagem personalizada construída sob demanda usando um **Dockerfile multi-stage** (compilação rápida com Maven e execução isolada via JRE 21).
-*   **Segurança**: Executado com usuário de baixo privilégio (**`appuser`** da UID 1001) para conformidade com as diretrizes de segurança de contêineres.
-*   **Diretório de Trabalho**: `/app`.
-*   **Variáveis de Ambiente**: Define chaves do token JWT e strings de conexão que sobrepõem as propriedades padrões da aplicação.
-*   **Portas**: Exposição da porta externa `8080` mapeada para a porta interna `8080`.
-
-### 2. Container do Banco de Dados (Oracle Free 23c)
-*   **Nome do Container**: `db-562795` (Contém o RM do representante).
-*   **Imagem Base**: `gvenzl/oracle-free:23-slim-faststart` (imagem oficial leve e inicialização expressa).
-*   **Persistência**: Utiliza o volume nomeado **`oracle_data_volume`** mapeado no caminho de persistência física `/opt/oracle/oradata`.
-*   **Inicialização**: O script de criação do schema (`db_setup.sql`) e de procedures/views (`db_procedures.sql`) são montados em `/container-entrypoint-initdb.d/` para execução automática no primeiro startup do banco.
-*   **Portas**: Porta `1521:1521` exposta para comunicação externa.
+> O AeroSoil AI é uma plataforma inteligente de agricultura de precisão que conecta dados meteorológicos espaciais (NASA/ESA) a sensores locais de campo (ESP32) para otimizar os ciclos de irrigação, reduzindo desperdício e atuando de forma ativa contra o estresse hídrico no solo. A solução unifica a análise preditiva orbital e telemetria física terrestre.
 
 ---
 
-## 🚀 How-To: Executar a Solução (Do Clone ao Teste)
+## 🛠️ Ajustes e melhorias
 
-Siga os passos detalhados abaixo para baixar, subir o ambiente, ver os logs e executar as validações exigidas.
+O projeto ainda está em desenvolvimento e as próximas atualizações serão voltadas para as seguintes tarefas:
 
-### Passo 1: Clonar o Repositório
-Abra o seu terminal no host (com Docker instalado) e execute:
+- [ ] Integração de atuadores físicos de irrigação (retransmissão de comandos da API para o ESP32)
+- [ ] Envio de notificações push para o App Mobile em alertas críticos
+- [ ] Dashboards gráficos adicionais de telemetria no painel do usuário
+- [ ] Otimização dos algoritmos preditivos para análise climática por satélite
+- [ ] Testes automatizados E2E (End-to-End) para toda a esteira de endpoints
+
+---
+
+## 💻 Pré-requisitos
+
+Antes de começar, verifique se você atendeu aos seguintes requisitos:
+
+* Você instalou a versão mais recente do **Docker** e **Docker Compose**.
+* Você tem uma máquina **Windows, macOS ou Linux** (o ambiente é 100% compatível com todos estes sistemas operacionais através do Docker).
+* Você leu a documentação e os scripts SQL de criação do banco e procedures localizados no diretório `/db`.
+
+---
+
+## 🚀 Instalando AeroSoil AI
+
+Para instalar o AeroSoil AI, siga estas etapas:
+
+Linux e macOS:
 ```bash
 git clone https://github.com/Gabriel-Maciel06/GsDevops.git
 cd GsDevops
+docker compose up --build -d
 ```
 
-### Passo 2: Subir a Infraestrutura em Segundo Plano (Background)
-Execute o Docker Compose para compilar a API personalizada e subir o Oracle Database em segundo plano:
+Windows:
 ```bash
+git clone https://github.com/Gabriel-Maciel06/GsDevops.git
+cd GsDevops
 docker-compose up --build -d
 ```
-> [!NOTE]
-> O banco de dados Oracle leva alguns segundos para completar a primeira inicialização. A API possui dependência de saúde (`depends_on: { db: { condition: service_healthy } }`), portanto ela só iniciará após a confirmação de que o Oracle está pronto para conexões.
-
-### Passo 3: Exibir e Acompanhar os Logs dos Contêineres
-Após rodar o comando em background, você pode exibir e acompanhar os logs para auditar o startup da solução:
-```bash
-# Acompanhar logs de todos os contêineres
-docker-compose logs -f
-
-# Ou monitorar individualmente
-docker container logs api-562795
-docker container logs db-562795
-```
-
-### Passo 4: Auditar os Contêineres (Validação de Diretório e Usuário)
-
-#### A. Acessar o Contêiner da API
-Conecte-se ao terminal da API para provar que a aplicação não roda como root:
-```bash
-docker container exec -it api-562795 /bin/bash
-```
-Dentro do terminal do contêiner, execute os comandos:
-```bash
-# 1. Identificar o usuário logado (Deve ser appuser e não root)
-whoami
-
-# 2. Exibir o diretório de trabalho atual (Deve ser /app)
-pwd
-
-# 3. Listar a estrutura de diretórios em formato detalhado
-ls -l
-```
-Para sair do contêiner, digite `exit`.
-
-#### B. Acessar o Contêiner do Banco de Dados
-Conecte-se ao terminal do banco de dados para auditar a estrutura:
-```bash
-docker container exec -it db-562795 /bin/bash
-```
-Dentro do terminal do contêiner do banco de dados, execute os comandos:
-```bash
-whoami
-pwd
-ls -la /opt/oracle/oradata
-```
-Para sair do contêiner, digite `exit`.
-
-### Passo 5: Prova de Persistência no Banco (Consultas SELECT)
-
-Conecte-se diretamente à interface CLI do Banco de Dados (`sqlplus`) executada dentro do próprio contêiner do banco para rodar consultas SQL nas tabelas criadas automaticamente:
-
-```bash
-# Acessar diretamente o SQL*Plus dentro do contêiner do banco
-docker container exec -it db-562795 sqlplus RM562795/oracle@//localhost:1521/FREEPDB1
-```
-
-Após o prompt abrir, execute as seguintes consultas SQL para verificar as tabelas e a estrutura relacional do AeroSoil AI:
-
-```sql
--- 1. Verificar a estrutura das tabelas existentes no schema do usuário
-SELECT table_name FROM user_tables;
-
--- 2. Consultar registros na tabela de usuários
-SELECT id_usuario, nome, email, perfil FROM TB_USUARIO;
-
--- 3. Consultar registros na tabela de sensores
-SELECT id_sensor, tipo_sensor, modelo, status, id_propriedade FROM TB_SENSOR;
-
--- 4. Consultar se há algum alerta gerado automaticamente
-SELECT * FROM TB_ALERTA;
-
--- 5. Exibir as views criadas pelas procedures
-SELECT view_name FROM user_views;
-```
-Para sair do SQL*Plus, digite `EXIT;`.
 
 ---
 
-## 📑 Endpoints da API para Teste Rápido
+## ☕ Usando AeroSoil AI
 
-Uma vez que a aplicação esteja no ar, você pode acessar a interface interativa do Swagger para realizar o CRUD nas tabelas:
-*   **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-*   **Docs JSON**: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+Para usar o AeroSoil AI, siga estas etapas:
+
+### 1. Monitorar a Inicialização e Logs
+Após subir os contêineres em segundo plano (background), você pode verificar os logs de ambos os serviços digitando:
+```bash
+docker-compose logs -f
+```
+
+### 2. Acessar a Documentação Online (Swagger UI)
+A API expõe a documentação interativa para teste de endpoints no navegador:
+*   **Ambiente Local**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+*   **Ambiente em Nuvem (Azure VM)**: [http://40.87.31.123:8080/swagger-ui.html](http://40.87.31.123:8080/swagger-ui.html)
+
+### 3. Auditar a Segurança e Usuário dos Contêineres (whoami)
+Para provar que os contêineres rodam com privilégios adequados, acesse seus terminais internos:
+```bash
+# Auditar contêiner da API (deve retornar 'appuser' e diretório '/app')
+docker container exec -it api-562795 whoami
+docker container exec -it api-562795 pwd
+docker container exec -it api-562795 ls -l
+
+# Auditar contêiner do Banco de Dados Oracle
+docker container exec -it db-562795 whoami
+docker container exec -it db-562795 pwd
+```
+
+### 4. Consultar Persistência de Dados via SELECT
+Para demonstrar a persistência das informações no Oracle 23c Free, conecte-se diretamente na interface CLI do banco dentro do contêiner e execute consultas SQL:
+```bash
+docker container exec -it db-562795 sqlplus RM562795/oracle@//localhost:1521/FREEPDB1
+```
+No prompt do SQL*Plus, execute:
+```sql
+-- Verificar usuários cadastrados pela API
+SELECT id_usuario, nome, email, perfil FROM TB_USUARIO;
+
+-- Verificar leituras enviadas pelos sensores IoT
+SELECT * FROM TB_LEITURA;
+```
+
+---
+
+## 📫 Contribuindo para AeroSoil AI
+
+Para contribuir com o AeroSoil AI, siga estas etapas:
+
+1. Bifurque este repositório.
+2. Crie um branch: `git checkout -b minha-nova-feature`.
+3. Faça suas alterações e confirme-as: `git commit -m 'feat: minha nova feature'`.
+4. Envie para o branch original: `git push origin minha-nova-feature`.
+5. Crie a solicitação de pull.
+
+Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
+
+---
+
+## 🤝 Colaboradores
+
+Agradecemos às seguintes pessoas que contribuíram para este projeto:
+
+| [<img src="assets/vitoria.jpg" width="100px;" alt="Vitória Rodrigues"/><br><sub><b>Vitória Rodrigues Martins</b><br>RM 565160</sub>](#) | [<img src="assets/augusto.jpg" width="100px;" alt="Augusto Bonomo"/><br><sub><b>Augusto Bonomo Júnior</b><br>RM 565155</sub>](#) | [<img src="assets/thomas.jpg" width="100px;" alt="Thomas Fontes"/><br><sub><b>Thomas Fontes</b><br>RM 562254</sub>](#) | [<img src="assets/gabriel.png" width="100px;" alt="Gabriel Maciel"/><br><sub><b>Gabriel Maciel</b><br>RM 562795</sub>](https://github.com/Gabriel-Maciel06) | [<img src="assets/matheus.jpg" width="100px;" alt="Matheus Molina"/><br><sub><b>Matheus Pereira Molina</b><br>RM 563399</sub>](#) |
+| :---: | :---: | :---: | :---: | :---: |
+
+---
+
+## 📝 Licença
+
+Esse projeto está sob licença acadêmica da FIAP. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
