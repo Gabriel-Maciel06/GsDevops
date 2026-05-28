@@ -1,0 +1,11 @@
+target/
+.git/
+.gitignore
+.idea/
+*.pdf
+setup_azure_aerosoil.sh
+cloud-init.txt
+README.md
+assets/
+db/
+*.py

@@ -41,6 +41,26 @@ docker-compose up --build -d
 
 ---
 
+## ☁️ Implantando na Nuvem (Azure)
+
+Para realizar o deploy 100% automatizado da solução na nuvem da Azure, siga as etapas abaixo:
+
+1. **Autenticação na Azure**:
+   Certifique-se de ter a Azure CLI instalada e faça o login em sua conta:
+   ```bash
+   az login
+   ```
+2. **Executar o Script de Automação**:
+   Rode o script na raiz do projeto para criar o Resource Group, VM Ubuntu, liberar as portas 8080 e 1521, e subir os containers via docker-compose remotamente na VM:
+   ```bash
+   chmod +x setup_azure_aerosoil.sh
+   ./setup_azure_aerosoil.sh
+   ```
+3. **Acessar a Aplicação**:
+   Após a conclusão (que leva cerca de 3-5 minutos), o script imprimirá o IP Público alocado. A documentação Swagger estará disponível online no endereço: `http://<IP_PUBLICO>:8080/swagger-ui.html`.
+
+---
+
 ## ☕ Usando AeroSoil AI
 
 Para usar o AeroSoil AI, siga estas etapas:

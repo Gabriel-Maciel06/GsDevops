@@ -48,6 +48,10 @@ public class AuthService implements UserDetailsService {
             throw new IllegalArgumentException("E-mail já cadastrado.");
         }
 
+        if ("ADMIN".equalsIgnoreCase(dto.perfil())) {
+            throw new IllegalArgumentException("Registro de administrador não é permitido publicamente.");
+        }
+
         Usuario usuario = Usuario.builder()
                 .nome(dto.nome())
                 .email(dto.email())
