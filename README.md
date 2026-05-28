@@ -98,20 +98,6 @@ SELECT * FROM TB_LEITURA;
 
 ---
 
-## 📫 Contribuindo para AeroSoil AI
-
-Para contribuir com o AeroSoil AI, siga estas etapas:
-
-1. Bifurque este repositório.
-2. Crie um branch: `git checkout -b minha-nova-feature`.
-3. Faça suas alterações e confirme-as: `git commit -m 'feat: minha nova feature'`.
-4. Envie para o branch original: `git push origin minha-nova-feature`.
-5. Crie a solicitação de pull.
-
-Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
-
----
-
 ## 🤝 Colaboradores
 
 Agradecemos às seguintes pessoas que contribuíram para este projeto:
