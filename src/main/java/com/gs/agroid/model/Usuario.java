@@ -35,6 +35,10 @@ public class Usuario implements UserDetails {
     @Column(name = "perfil", nullable = false, length = 20)
     private String perfil; // USER, ESP32, ADMIN
 
+    @Column(name = "ativo", nullable = false)
+    @Builder.Default
+    private boolean ativo = true;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + perfil));
@@ -57,7 +61,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.ativo;
     }
 
     @Override
@@ -67,6 +71,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.ativo;
     }
 }

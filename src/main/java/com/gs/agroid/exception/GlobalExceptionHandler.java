@@ -48,7 +48,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex, HttpServletRequest request) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro Interno do Servidor", ex.getMessage(), request.getRequestURI());
+        ex.printStackTrace(); // Optional log
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro Interno do Servidor", "Ocorreu um erro inesperado. Contate o suporte.", request.getRequestURI());
     }
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error, String message, String uri) {

@@ -17,7 +17,7 @@ public class Leitura {
 
     @MapsId("sensorId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sensor", insertable = false, updatable = false)
+    @JoinColumn(name = "id_sensor")
     private Sensor sensor;
 
     @Column(name = "valor", nullable = false, precision = 10, scale = 2)

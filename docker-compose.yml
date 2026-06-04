@@ -2,12 +2,10 @@ services:
   db:
     image: gvenzl/oracle-free:23-slim-faststart
     container_name: db-562795
-    environment:
-      - ORACLE_PASSWORD=oracle
-      - APP_USER=RM562795
-      - APP_USER_PASSWORD=oracle
+    env_file:
+      - .env
     ports:
-      - "1521:1521"
+      - "127.0.0.1:1521:1521"
     volumes:
       - oracle_data:/opt/oracle/oradata
       - ./db/db_setup.sql:/container-entrypoint-initdb.d/01_db_setup.sql
@@ -29,11 +27,13 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@db:1521/FREEPDB1
-      - SPRING_DATASOURCE_USERNAME=RM562795
-      - SPRING_DATASOURCE_PASSWORD=oracle
-      - JWT_SECRET=my-secret-key-gs-agro-id-2026-very-secure-random-key-here
+      - SPRING_DATASOURCE_USERNAME=${APP_USER}
+      - SPRING_DATASOURCE_PASSWORD=${APP_USER_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
     networks:
       - aerosoil_network
     restart: unless-stopped
