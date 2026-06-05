@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/leituras")
 @RequiredArgsConstructor
 public class LeituraController {
