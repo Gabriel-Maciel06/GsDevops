@@ -1,6 +1,7 @@
 package com.gs.agroid.security;
 
-import com.gs.agroid.repository.UsuarioRepository;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.gs.agroid.model.Usuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,20 +19,26 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = recoverToken(request);
         if (token != null) {
-            String email = tokenService.validateToken(token);
-            if (!email.isEmpty()) {
-                usuarioRepository.findByEmail(email).ifPresent(usuario -> {
+            DecodedJWT decodedJWT = tokenService.getDecodedToken(token);
+            if (decodedJWT != null) {
+                String email = decodedJWT.getSubject();
+                String role = decodedJWT.getClaim("role").asString();
+                if (email != null && !email.isEmpty() && role != null) {
+                    Usuario usuario = Usuario.builder()
+                            .email(email)
+                            .perfil(role)
+                            .ativo(true)
+                            .build();
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             usuario, null, usuario.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                });
+                }
             }
         }
         filterChain.doFilter(request, response);

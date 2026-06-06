@@ -29,4 +29,9 @@ public class AuthController {
         LoginResponseDto response = authService.register(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("OK");
+    }
 }

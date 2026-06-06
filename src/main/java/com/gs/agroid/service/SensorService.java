@@ -73,6 +73,10 @@ public class SensorService {
         Sensor sensor = sensorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sensor não encontrado com ID: " + id));
 
+        if (!sensor.getTipoSensor().equalsIgnoreCase(dto.tipoSensor())) {
+            throw new IllegalArgumentException("Não é permitido alterar o tipo de um sensor existente.");
+        }
+
         Propriedade propriedade = propriedadeRepository.findById(dto.propriedadeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Propriedade não encontrada com ID: " + dto.propriedadeId()));
 

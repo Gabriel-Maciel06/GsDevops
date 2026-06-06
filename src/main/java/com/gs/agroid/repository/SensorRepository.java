@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface SensorRepository extends JpaRepository<Sensor, Long> {
+    @EntityGraph(attributePaths = {"propriedade"})
     List<Sensor> findByPropriedadeId(Long propriedadeId);
 
     @EntityGraph(attributePaths = {"propriedade"})

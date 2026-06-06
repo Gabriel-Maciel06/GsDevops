@@ -48,15 +48,16 @@ public class AuthService implements UserDetailsService {
             throw new IllegalArgumentException("E-mail já cadastrado.");
         }
 
-        if ("ADMIN".equalsIgnoreCase(dto.perfil())) {
-            throw new IllegalArgumentException("Registro de administrador não é permitido publicamente.");
+        String perfil = dto.perfil() != null ? dto.perfil().toUpperCase() : "USER";
+        if ("ADMIN".equalsIgnoreCase(perfil) || "ESP32".equalsIgnoreCase(perfil)) {
+            throw new IllegalArgumentException("Registro de administrador ou dispositivo IoT não é permitido publicamente.");
         }
 
         Usuario usuario = Usuario.builder()
                 .nome(dto.nome())
                 .email(dto.email())
                 .senha(passwordEncoder.encode(dto.senha()))
-                .perfil(dto.perfil().toUpperCase())
+                .perfil(perfil)
                 .build();
 
         usuario = usuarioRepository.save(usuario);
