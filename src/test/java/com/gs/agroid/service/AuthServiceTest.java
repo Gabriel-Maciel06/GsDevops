@@ -76,7 +76,21 @@ class AuthServiceTest {
             authService.register(dto);
         });
 
-        assertEquals("Registro de administrador não é permitido publicamente.", exception.getMessage());
+        assertEquals("Registro de administrador ou dispositivo IoT não é permitido publicamente.", exception.getMessage());
+        verify(usuarioRepository, never()).save(any(Usuario.class));
+    }
+
+    @Test
+    void shouldFailRegisteringEsp32Publicly() {
+        RegisterRequestDto dto = new RegisterRequestDto("IoT Device", "esp32@test.com", "senha123", "ESP32");
+
+        when(usuarioRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            authService.register(dto);
+        });
+
+        assertEquals("Registro de administrador ou dispositivo IoT não é permitido publicamente.", exception.getMessage());
         verify(usuarioRepository, never()).save(any(Usuario.class));
     }
 
