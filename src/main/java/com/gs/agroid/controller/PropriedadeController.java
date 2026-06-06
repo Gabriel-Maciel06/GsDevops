@@ -3,8 +3,10 @@ package com.gs.agroid.controller;
 import com.gs.agroid.dto.PropriedadeRequestDto;
 import com.gs.agroid.dto.PropriedadeResponseDto;
 import com.gs.agroid.dto.SensorResponseDto;
+import com.gs.agroid.dto.AtuadorResponseDto;
 import com.gs.agroid.service.PropriedadeService;
 import com.gs.agroid.service.SensorService;
+import com.gs.agroid.service.AtuadorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ public class PropriedadeController {
 
     private final PropriedadeService propriedadeService;
     private final SensorService sensorService;
+    private final AtuadorService atuadorService;
 
     @PostMapping
     public ResponseEntity<PropriedadeResponseDto> create(@RequestBody @Valid PropriedadeRequestDto dto) {
@@ -62,6 +65,14 @@ public class PropriedadeController {
         return ResponseEntity.ok(sensores);
     }
 
+    // Endpoint para retornar os atuadores daquela área
+    @GetMapping("/{id}/atuadores")
+    public ResponseEntity<List<AtuadorResponseDto>> getAtuadoresByArea(@PathVariable Long id) {
+        List<AtuadorResponseDto> atuadores = atuadorService.findByPropriedade(id);
+        atuadores.forEach(this::addAtuadorHateoasLinks);
+        return ResponseEntity.ok(atuadores);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PropriedadeResponseDto> update(@PathVariable Long id, @RequestBody @Valid PropriedadeRequestDto dto) {
         PropriedadeResponseDto response = propriedadeService.update(id, dto);
@@ -79,13 +90,22 @@ public class PropriedadeController {
         // Link para obter detalhes da própria propriedade
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getId())).withSelfRel());
         
-        // Link apontando diretamente para o histórico de sensores daquela área (/areas/{id}/sensores)
+        // Link apontando diretamente para os sensores daquela área (/areas/{id}/sensores)
         dto.add(Link.of("/api/areas/" + dto.getId() + "/sensores").withRel("sensores"));
+
+        // Link apontando diretamente para os atuadores daquela área (/areas/{id}/atuadores)
+        dto.add(Link.of("/api/areas/" + dto.getId() + "/atuadores").withRel("atuadores"));
     }
 
     private void addSensorHateoasLinks(SensorResponseDto dto) {
         dto.add(linkTo(methodOn(SensorController.class).findById(dto.getId())).withSelfRel());
         dto.add(Link.of("/api/sensores/" + dto.getId() + "/leituras").withRel("leituras"));
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
+    }
+
+    private void addAtuadorHateoasLinks(AtuadorResponseDto dto) {
+        dto.add(linkTo(methodOn(AtuadorController.class).findById(dto.getId())).withSelfRel());
+        dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
+        dto.add(Link.of("/api/atuadores/" + dto.getId() + "/toggle").withRel("toggle"));
     }
 }

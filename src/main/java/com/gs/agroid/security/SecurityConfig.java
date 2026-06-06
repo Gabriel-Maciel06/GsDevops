@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/sensores/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/alertas/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/satelite/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/atuadores/**").hasAnyRole("USER", "ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -69,9 +70,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // Permite que qualquer origem acesse a API (Mobile, Web, etc.)
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedOriginPatterns(List.of("*")); // Permite que qualquer origem acesse a API
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
