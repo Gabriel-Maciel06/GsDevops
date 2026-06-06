@@ -74,6 +74,6 @@ public class AtuadorController {
     private void addHateoasLinks(AtuadorResponseDto dto) {
         dto.add(linkTo(methodOn(AtuadorController.class).findById(dto.getId())).withSelfRel());
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
-        dto.add(Link.of("/api/atuadores/" + dto.getId() + "/toggle").withRel("toggle"));
+        dto.add(linkTo(methodOn(AtuadorController.class).toggle(dto.getId())).withRel("toggle"));
     }
 }

@@ -79,7 +79,7 @@ public class SensorController {
 
     private void addHateoasLinks(SensorResponseDto dto) {
         dto.add(linkTo(methodOn(SensorController.class).findById(dto.getId())).withSelfRel());
-        dto.add(Link.of("/api/sensores/" + dto.getId() + "/leituras").withRel("leituras"));
+        dto.add(linkTo(methodOn(SensorController.class).getLeituras(dto.getId(), null, null)).withRel("leituras"));
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
     }
 

@@ -91,21 +91,21 @@ public class PropriedadeController {
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getId())).withSelfRel());
         
         // Link apontando diretamente para os sensores daquela área (/areas/{id}/sensores)
-        dto.add(Link.of("/api/areas/" + dto.getId() + "/sensores").withRel("sensores"));
+        dto.add(linkTo(methodOn(PropriedadeController.class).getSensoresByArea(dto.getId())).withRel("sensores"));
 
         // Link apontando diretamente para os atuadores daquela área (/areas/{id}/atuadores)
-        dto.add(Link.of("/api/areas/" + dto.getId() + "/atuadores").withRel("atuadores"));
+        dto.add(linkTo(methodOn(PropriedadeController.class).getAtuadoresByArea(dto.getId())).withRel("atuadores"));
     }
 
     private void addSensorHateoasLinks(SensorResponseDto dto) {
         dto.add(linkTo(methodOn(SensorController.class).findById(dto.getId())).withSelfRel());
-        dto.add(Link.of("/api/sensores/" + dto.getId() + "/leituras").withRel("leituras"));
+        dto.add(linkTo(methodOn(SensorController.class).getLeituras(dto.getId(), null, null)).withRel("leituras"));
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
     }
 
     private void addAtuadorHateoasLinks(AtuadorResponseDto dto) {
         dto.add(linkTo(methodOn(AtuadorController.class).findById(dto.getId())).withSelfRel());
         dto.add(linkTo(methodOn(PropriedadeController.class).findById(dto.getPropriedadeId())).withRel("propriedade"));
-        dto.add(Link.of("/api/atuadores/" + dto.getId() + "/toggle").withRel("toggle"));
+        dto.add(linkTo(methodOn(AtuadorController.class).toggle(dto.getId())).withRel("toggle"));
     }
 }
