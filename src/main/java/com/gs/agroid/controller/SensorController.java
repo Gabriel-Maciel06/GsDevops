@@ -84,7 +84,7 @@ public class SensorController {
     }
 
     private void addLeituraHateoasLinks(LeituraResponseDto dto) {
-        dto.add(Link.of("/api/leituras?sensorId=" + dto.getSensorId() + "&timestamp=" + dto.getTimestamp().toString()).withSelfRel());
+        dto.add(linkTo(methodOn(LeituraController.class).findById(dto.getSensorId(), dto.getTimestamp())).withSelfRel());
         dto.add(linkTo(methodOn(SensorController.class).findById(dto.getSensorId())).withRel("sensor"));
     }
 }
