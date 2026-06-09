@@ -37,8 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        // Endpoint do ESP32 para receber leituras brutas (requer JWT com papel ESP32)
-                        .requestMatchers(HttpMethod.POST, "/api/leituras").hasRole("ESP32")
+                        // Endpoint do ESP32 para receber leituras brutas (requer JWT com papel ESP32, USER ou ADMIN para testes)
+                        .requestMatchers(HttpMethod.POST, "/api/leituras").hasAnyRole("ESP32", "USER", "ADMIN")
                         // Endpoints de CRUD de leituras para usuários normais/admin
                         .requestMatchers(HttpMethod.GET, "/api/leituras").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/leituras").hasAnyRole("USER", "ADMIN")
